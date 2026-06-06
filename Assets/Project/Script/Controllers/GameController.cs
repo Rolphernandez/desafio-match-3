@@ -66,12 +66,17 @@ namespace Gazeus.DesafioMatch3.Controllers
             {
                 if (Mathf.Abs(_selectedX - x) + Mathf.Abs(_selectedY - y) > 1)
                 {
-                    _selectedX = -1;
-                    _selectedY = -1;
+                    // NOVO COMPORTAMENTO: Se clicar longe, desmarca a antiga e JÁ SELECIONA a nova!
+                    
+                    _selectedX = x;
+                    _selectedY = y;
+                    
                 }
                 else
                 {
                     _isAnimating = true;
+                   
+
                     _boardView.SwapTiles(_selectedX, _selectedY, x, y).onComplete += () =>
                     {
                         bool isValid = _gameService.IsValidMovement(_selectedX, _selectedY, x, y);
@@ -82,6 +87,7 @@ namespace Gazeus.DesafioMatch3.Controllers
                         }
                         else
                         {
+                            // Movimento inválido (bate e volta)
                             _boardView.SwapTiles(x, y, _selectedX, _selectedY).onComplete += () => _isAnimating = false;
                         }
                         _selectedX = -1;
@@ -93,6 +99,8 @@ namespace Gazeus.DesafioMatch3.Controllers
             {
                 _selectedX = x;
                 _selectedY = y;
+
+                
             }
         }
     }

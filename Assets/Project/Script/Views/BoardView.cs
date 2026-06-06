@@ -21,7 +21,24 @@ namespace Gazeus.DesafioMatch3.Views
 
         public void CreateBoard(List<List<Tile>> board)
         {
+            // Define a quantidade de colunas do Grid
             _boardContainer.constraintCount = board[0].Count;
+
+            // --- INÍCIO DA MATEMÁTICA DE RESPONSIVIDADE ---
+            RectTransform boardRect = _boardContainer.GetComponent<RectTransform>();
+            float larguraDisponivel = boardRect.rect.width;
+
+            // Pega os espaçamentos e margens para o cálculo ser 100% preciso
+            float espacamentoTotal = _boardContainer.spacing.x * (board[0].Count - 1);
+            float margens = _boardContainer.padding.left + _boardContainer.padding.right;
+
+            // Calcula o tamanho exato que cada quadrado deve ter
+            float tamanhoIdealDaPeca = (larguraDisponivel - espacamentoTotal - margens) / board[0].Count;
+
+            // Aplica o tamanho dinâmico no Grid Layout
+            _boardContainer.cellSize = new Vector2(tamanhoIdealDaPeca, tamanhoIdealDaPeca);
+            // --- FIM DA MATEMÁTICA DE RESPONSIVIDADE ---
+
             _tiles = new GameObject[board.Count][];
             _tileSpots = new TileSpotView[board.Count][];
 
@@ -127,7 +144,7 @@ namespace Gazeus.DesafioMatch3.Views
 
             return sequence;
         }
-
+                
         #region Events
         private void TileSpot_Clicked(int x, int y)
         {
