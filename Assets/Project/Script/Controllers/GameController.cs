@@ -66,16 +66,17 @@ namespace Gazeus.DesafioMatch3.Controllers
             {
                 if (Mathf.Abs(_selectedX - x) + Mathf.Abs(_selectedY - y) > 1)
                 {
-                    // NOVO COMPORTAMENTO: Se clicar longe, desmarca a antiga e JÁ SELECIONA a nova!
-                    
+                    // Clicou longe: apenas atualiza as coordenadas e move a moldura para a nova peça
                     _selectedX = x;
                     _selectedY = y;
-                    
+                    _boardView.ShowSelectionFrame(x, y);
                 }
                 else
                 {
                     _isAnimating = true;
-                   
+
+                    // Vai tentar o merge: esconde a moldura imediatamente
+                    _boardView.HideSelectionFrame();
 
                     _boardView.SwapTiles(_selectedX, _selectedY, x, y).onComplete += () =>
                     {
@@ -87,7 +88,7 @@ namespace Gazeus.DesafioMatch3.Controllers
                         }
                         else
                         {
-                            // Movimento inválido (bate e volta)
+                            // Merge falhou, faz o bate e volta
                             _boardView.SwapTiles(x, y, _selectedX, _selectedY).onComplete += () => _isAnimating = false;
                         }
                         _selectedX = -1;
@@ -100,7 +101,8 @@ namespace Gazeus.DesafioMatch3.Controllers
                 _selectedX = x;
                 _selectedY = y;
 
-                
+                // Primeiro clique: mostra a moldura em cima da peça clicada
+                _boardView.ShowSelectionFrame(x, y);
             }
         }
     }

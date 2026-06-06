@@ -15,6 +15,8 @@ namespace Gazeus.DesafioMatch3.Views
         [SerializeField] private GridLayoutGroup _boardContainer;
         [SerializeField] private TilePrefabRepository _tilePrefabRepository;
         [SerializeField] private TileSpotView _tileSpotPrefab;
+        [SerializeField] private GameObject _selectionFrame;
+        [SerializeField] private GameObject _matchParticlePrefab;
 
         private GameObject[][] _tiles;
         private TileSpotView[][] _tileSpots;
@@ -97,8 +99,33 @@ namespace Gazeus.DesafioMatch3.Views
             for (int i = 0; i < matchedPosition.Count; i++)
             {
                 Vector2Int position = matchedPosition[i];
-                Destroy(_tiles[position.y][position.x]);
-                _tiles[position.y][position.x] = null;
+
+                if (_tiles[position.y][position.x] != null)
+                {
+                    // 1. Pega a posição e força um pequeno ajuste no eixo Z (-5) 
+                    // Isso puxa a partícula um pouco para "frente" em direção à câmera, garantindo que não entre atrás do tabuleiro
+                    Vector3 posicaoDaPeca = _tiles[position.y][position.x].transform.position;
+                    posicaoDaPeca.z -= 5f;
+
+                    if (_matchParticlePrefab != null)
+                    {
+                        GameObject particula = Instantiate(_matchParticlePrefab, posicaoDaPeca, Quaternion.identity);
+
+                        // 2. Coloca no Canvas, MAS usa 'false' no final. 
+                        // Isso impede que a partícula herde as posições matemáticas loucas do RectTransform
+                        particula.transform.SetParent(_boardContainer.transform, false);
+
+                        // 3. Força a posição novamente para ter certeza absoluta
+                        particula.transform.position = posicaoDaPeca;
+
+                        // 4. MULTIPLICA A ESCALA: Se a partícula 3D ficar minúscula no Canvas, 
+                        // você deve forçar um tamanho gigante aqui. Se ficar muito grande, mude o 50f para 10f ou 5f.
+                        particula.transform.localScale = Vector3.one;
+                    }
+
+                    Destroy(_tiles[position.y][position.x]);
+                    _tiles[position.y][position.x] = null;
+                }
             }
 
             return DOVirtual.DelayedCall(0.2f, () => { });
@@ -144,7 +171,28 @@ namespace Gazeus.DesafioMatch3.Views
 
             return sequence;
         }
-                
+
+        public void ShowSelectionFrame(int x, int y)
+        {
+            if (_selectionFrame != null && _tileSpots[y] != null && _tileSpots[y][x] != null)
+            {
+                // Move a moldura EXATAMENTE para a posição do espaço (buraco) na tela
+                _selectionFrame.transform.position = _tileSpots[y][x].transform.position;
+
+                // Torna a moldura visível
+                _selectionFrame.SetActive(true);
+            }
+        }
+
+        public void HideSelectionFrame()
+        {
+            if (_selectionFrame != null)
+            {
+                // Esconde a moldura
+                _selectionFrame.SetActive(false);
+            }
+        }
+
         #region Events
         private void TileSpot_Clicked(int x, int y)
         {
