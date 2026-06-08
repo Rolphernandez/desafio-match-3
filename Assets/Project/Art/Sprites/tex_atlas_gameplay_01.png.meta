@@ -93,7 +93,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 1024
+    maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -124,12 +124,12 @@ TextureImporter:
       name: tex_atlas_gameplay_01_0
       rect:
         serializedVersion: 2
-        x: 73
-        y: 3766
-        width: 300
-        height: 281
+        x: 37
+        y: 1883
+        width: 150
+        height: 140
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -146,12 +146,12 @@ TextureImporter:
       name: tex_atlas_gameplay_01_1
       rect:
         serializedVersion: 2
-        x: 383
-        y: 3766
-        width: 300
-        height: 281
+        x: 192
+        y: 1883
+        width: 150
+        height: 140
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -168,12 +168,12 @@ TextureImporter:
       name: tex_atlas_gameplay_01_2
       rect:
         serializedVersion: 2
-        x: 693
-        y: 3766
-        width: 300
-        height: 281
+        x: 347
+        y: 1883
+        width: 150
+        height: 140
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -190,12 +190,12 @@ TextureImporter:
       name: tex_atlas_gameplay_01_3
       rect:
         serializedVersion: 2
-        x: 1003
-        y: 3766
-        width: 300
-        height: 281
+        x: 502
+        y: 1883
+        width: 150
+        height: 140
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -212,12 +212,12 @@ TextureImporter:
       name: tex_atlas_gameplay_01_4
       rect:
         serializedVersion: 2
-        x: 1352
-        y: 3826
-        width: 142
-        height: 154
+        x: 676
+        y: 1913
+        width: 71
+        height: 77
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -234,12 +234,12 @@ TextureImporter:
       name: tex_atlas_gameplay_01_5
       rect:
         serializedVersion: 2
-        x: 1534
-        y: 3828
-        width: 148
-        height: 148
+        x: 767
+        y: 1914
+        width: 74
+        height: 74
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -256,12 +256,12 @@ TextureImporter:
       name: tex_atlas_gameplay_01_6
       rect:
         serializedVersion: 2
-        x: 1737
-        y: 3750
-        width: 312
-        height: 296
+        x: 869
+        y: 1875
+        width: 156
+        height: 148
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -278,12 +278,12 @@ TextureImporter:
       name: tex_atlas_gameplay_01_7
       rect:
         serializedVersion: 2
-        x: 2089
-        y: 3750
-        width: 312
-        height: 296
+        x: 1045
+        y: 1875
+        width: 156
+        height: 148
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -296,11 +296,297 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: tex_atlas_gameplay_01_8
+      rect:
+        serializedVersion: 2
+        x: 1212
+        y: 1900
+        width: 100
+        height: 102
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7215fa1df8df6cb4cbd7b7723c4bdcd7
+      internalID: -701378245
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tex_atlas_gameplay_01_9
+      rect:
+        serializedVersion: 2
+        x: 1325
+        y: 1916
+        width: 183
+        height: 74
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 814cda0a43447324591cec7d0bbf1d13
+      internalID: -1901071291
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tex_atlas_gameplay_01_10
+      rect:
+        serializedVersion: 2
+        x: 1527
+        y: 1872
+        width: 456
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 71e251777cf5a9b4ca8750ac119a5815
+      internalID: 759521921
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tex_atlas_gameplay_01_11
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 1711
+        width: 110
+        height: 131
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5b35e4207cca1a549b06c904f4997fa6
+      internalID: -1361887660
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tex_atlas_gameplay_01_12
+      rect:
+        serializedVersion: 2
+        x: 172
+        y: 1740
+        width: 110
+        height: 73
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b36133824458f4e46bb3dd08adc5f205
+      internalID: -1316225169
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tex_atlas_gameplay_01_13
+      rect:
+        serializedVersion: 2
+        x: 308
+        y: 1749
+        width: 501
+        height: 55
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b1f391f289d86af4ab73c1cad49c8040
+      internalID: 1238420704
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tex_atlas_gameplay_01_14
+      rect:
+        serializedVersion: 2
+        x: 831
+        y: 1757
+        width: 490
+        height: 44
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 05f79f58968df3143965c7efb609a47a
+      internalID: 1574269909
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tex_atlas_gameplay_01_15
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 955
+        height: 1702
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4c1b1133316a188489717ac25e684584
+      internalID: 2092624162
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tex_atlas_gameplay_01_16
+      rect:
+        serializedVersion: 2
+        x: 966
+        y: 0
+        width: 812
+        height: 1703
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ef422928956c6744eb4fe8ae14e92fcb
+      internalID: 1325248488
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tex_atlas_gameplay_01_17
+      rect:
+        serializedVersion: 2
+        x: 1821
+        y: 1401
+        width: 185
+        height: 185
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 95e7594d36eede34eb077812428dae50
+      internalID: -1357841548
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tex_atlas_gameplay_01_18
+      rect:
+        serializedVersion: 2
+        x: 1822
+        y: 1142
+        width: 185
+        height: 191
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cdf8f090c3a9a0d49acea4db02dc5488
+      internalID: -541832059
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tex_atlas_gameplay_01_19
+      rect:
+        serializedVersion: 2
+        x: 1830
+        y: 879
+        width: 176
+        height: 206
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a1d512a7d49304e4da8b13b6017ee48d
+      internalID: 921113014
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tex_atlas_gameplay_01_20
+      rect:
+        serializedVersion: 2
+        x: 1830
+        y: 612
+        width: 183
+        height: 218
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a49c0888dd2f7024fbba1b01d8f48113
+      internalID: 1199989553
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: c202fa637b6748043a43518a94838adb
     internalID: 0
     vertices: []
     indices: 
@@ -308,16 +594,31 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       tex_atlas_gameplay_01_0: 455055555028507995
       tex_atlas_gameplay_01_1: 6971203012089703688
+      tex_atlas_gameplay_01_10: 759521921
+      tex_atlas_gameplay_01_11: -1361887660
+      tex_atlas_gameplay_01_12: -1316225169
+      tex_atlas_gameplay_01_13: 1238420704
+      tex_atlas_gameplay_01_14: 1574269909
+      tex_atlas_gameplay_01_15: 2092624162
+      tex_atlas_gameplay_01_16: 1325248488
+      tex_atlas_gameplay_01_17: -1357841548
+      tex_atlas_gameplay_01_18: -541832059
+      tex_atlas_gameplay_01_19: 921113014
       tex_atlas_gameplay_01_2: -4767244516812077143
+      tex_atlas_gameplay_01_20: 1199989553
       tex_atlas_gameplay_01_3: -7190565786256829982
       tex_atlas_gameplay_01_4: -1370601412648485016
       tex_atlas_gameplay_01_5: -3367829528197215748
       tex_atlas_gameplay_01_6: -2477388851066034974
       tex_atlas_gameplay_01_7: -6545757607649976792
+      tex_atlas_gameplay_01_8: -701378245
+      tex_atlas_gameplay_01_9: -1901071291
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
