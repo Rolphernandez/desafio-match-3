@@ -5,6 +5,8 @@ using Gazeus.DesafioMatch3.Core;
 using Gazeus.DesafioMatch3.Models;
 using Gazeus.DesafioMatch3.Views;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 namespace Gazeus.DesafioMatch3.Controllers
 {
@@ -18,6 +20,39 @@ namespace Gazeus.DesafioMatch3.Controllers
         private bool _isAnimating;
         private int _selectedX = -1;
         private int _selectedY = -1;
+
+        [Header("UI Elements")]
+        [SerializeField] private GameObject _menuScreen;
+        [SerializeField] private GameObject _gameplayScreen;
+        [SerializeField] private TMP_Text _timerText;
+        [SerializeField] private TMP_Text _coinText;
+
+        [Header("Game Settings")]
+        [SerializeField] private float _timeLimit = 60f; // Tempo em segundos
+
+        private float _timeRemaining;
+        private int _currentCoins = 0;
+        private bool _isGameRunning = false;
+
+        [Header("Progress Bar Settings")]
+        [SerializeField] private UnityEngine.UI.Image _progressImage; 
+
+        private bool _bonus80Gained = false;
+        private bool _bonus180Gained = false;
+
+        [Header("Audio Settings")]
+        [SerializeField] private AudioSource _bgmAudioSource; // Arraste a sua música para cá
+        [SerializeField] private float _normalPitch = 1.0f;
+        [SerializeField] private float _fastPitch = 1.25f; // Ajuste aqui o quão rápido quer a música
+
+        [Header("Bonus Visual References")]
+        [SerializeField] private GameObject _iceBonus1;
+        [SerializeField] private ParticleSystem _particleBonus1;
+
+        [SerializeField] private GameObject _iceBonus2;
+        [SerializeField] private ParticleSystem _particleBonus2;
+
+        private bool _isMusicSpedUp = false;
 
         #region Unity
         private void Awake()
@@ -41,6 +76,17 @@ namespace Gazeus.DesafioMatch3.Controllers
         private void AnimateBoard(List<BoardSequence> boardSequences, int index, Action onComplete)
         {
             BoardSequence boardSequence = boardSequences[index];
+
+            if (boardSequence.MatchedPosition != null && boardSequence.MatchedPosition.Count > 0)
+            {
+                _currentCoins += boardSequence.MatchedPosition.Count;
+                UpdateCoinUI();
+
+                // --- NOVAS CHAMADAS DA BARRA DE PROGRESSO ---
+                UpdateProgressBar();
+                CheckProgressMilestones();
+                // --------------------------------------------
+            }
 
             Sequence sequence = DOTween.Sequence();
             sequence.Append(_boardView.DestroyTiles(boardSequence.MatchedPosition));
@@ -103,6 +149,173 @@ namespace Gazeus.DesafioMatch3.Controllers
 
                 // Primeiro clique: mostra a moldura em cima da peça clicada
                 _boardView.ShowSelectionFrame(x, y);
+            }
+        }
+
+        // Função que será chamada pelo Botão Play
+        public void StartGameSequence()
+        {
+            _menuScreen.SetActive(false);
+            _gameplayScreen.SetActive(true);
+
+            _timeRemaining = _timeLimit;
+            _currentCoins = 0;
+            _isGameRunning = true;
+
+            UpdateCoinUI();
+
+            _bonus80Gained = false;
+            _bonus180Gained = false;
+            if (_progressImage != null) _progressImage.fillAmount = 0f;
+           
+            _isMusicSpedUp = false;
+            if (_bgmAudioSource != null)
+                _bgmAudioSource.pitch = _normalPitch;
+
+            // Garante que as imagens do gelo estejam visíveis ao reiniciar
+            if (_iceBonus1 != null)
+            {
+                _iceBonus1.SetActive(true);
+                if (_iceBonus1.TryGetComponent<UnityEngine.UI.Image>(out var img1)) img1.enabled = true;
+            }
+            if (_iceBonus2 != null)
+            {
+                _iceBonus2.SetActive(true);
+                if (_iceBonus2.TryGetComponent<UnityEngine.UI.Image>(out var img2)) img2.enabled = true;
+            }
+        }
+
+        // O Update roda a cada frame do jogo
+        private void Update()
+        {
+            if (_isGameRunning && _timeRemaining > 0)
+            {
+                _timeRemaining -= Time.deltaTime;
+                UpdateTimerUI();
+
+                // --- SISTEMA DINÂMICO DE VELOCIDADE DA MÚSICA ---
+                if (_timeRemaining <= 10f)
+                {
+                    // Se o tempo for menor que 10 e a música ainda estiver normal, acelera!
+                    if (!_isMusicSpedUp)
+                    {
+                        _isMusicSpedUp = true;
+                        if (_bgmAudioSource != null) _bgmAudioSource.pitch = _fastPitch;
+                        Debug.Log("Correria! Música acelerada.");
+                    }
+                }
+                else
+                {
+                    // Se o tempo for maior que 10 (ex: ganhou bônus) e a música estava acelerada, volta ao normal!
+                    if (_isMusicSpedUp)
+                    {
+                        _isMusicSpedUp = false;
+                        if (_bgmAudioSource != null) _bgmAudioSource.pitch = _normalPitch;
+                        Debug.Log("Ufa! Ritmo normal restabelecido.");
+                    }
+                }
+                // -------------------------------------------------
+
+                if (_timeRemaining <= 0)
+                {
+                    _timeRemaining = 0;
+                    _isGameRunning = false;
+
+                    // Opcional: Parar a música no Game Over
+                    if (_bgmAudioSource != null) _bgmAudioSource.Stop();
+
+                    Debug.Log("O tempo acabou!");
+                }
+            }
+        }
+
+        private void UpdateTimerUI()
+        {
+            if (_timerText != null)
+            {
+                // Mathf.CeilToInt arredonda para cima (ex: 59.1 vira 60)
+                _timerText.text = Mathf.CeilToInt(_timeRemaining).ToString();
+            }
+        }
+
+        private void UpdateCoinUI()
+        {
+            if (_coinText != null)
+            {
+                _coinText.text = _currentCoins.ToString();
+            }
+        }
+
+        private void UpdateProgressBar()
+        {
+            if (_progressImage != null)
+            {
+                // O Mathf.Clamp01 garante que o valor nunca passe de 1.0 (100%), mesmo se o jogador passar de 500 pontos
+                _progressImage.fillAmount = Mathf.Clamp01((float)_currentCoins / 400f);
+            }
+        }
+        private void CheckProgressMilestones()
+        {
+            // 1º Bônus: 80 pontos -> Ganha +15 segundos de tempo
+            if (_currentCoins >= 80 && !_bonus80Gained)
+            {
+                _bonus80Gained = true;
+                _timeRemaining += 15f;
+                UpdateTimerUI();
+
+                // Ativa o efeito visual do primeiro bônus
+                ShatterIce(_iceBonus1, _particleBonus1);
+
+                Debug.Log("Bônus de Tempo Ativado! Gelo 1 Quebrado.");
+            }
+
+            // 2º Bônus: 180 pontos -> Ganha +20 moedas de bônus
+            if (_currentCoins >= 180 && !_bonus180Gained)
+            {
+                _bonus180Gained = true;
+                _currentCoins += 20;
+
+                UpdateCoinUI();
+                UpdateProgressBar();
+
+                // Ativa o efeito visual do segundo bônus
+                ShatterIce(_iceBonus2, _particleBonus2);
+
+                Debug.Log("Bônus de Moedas Ativado! Gelo 2 Quebrado.");
+            }
+        }
+
+        private void ShatterIce(GameObject iceObject, ParticleSystem particle)
+        {
+            if (iceObject == null) return;
+
+            // 1. Desativa apenas o componente de imagem para o gelo sumir visualmente na hora
+            if (iceObject.TryGetComponent<UnityEngine.UI.Image>(out var iceImage))
+            {
+                iceImage.enabled = false;
+            }
+
+            // 2. Toca o efeito de estilhaços de vidro/gelo
+            if (particle != null)
+            {
+                particle.Play();
+
+                // --- NOVA LÓGICA: Encontra o AudioSource da partícula e toca o som ---
+                if (particle.TryGetComponent<AudioSource>(out var particleAudio))
+                {
+                    particleAudio.Play();
+                }
+                // ---------------------------------------------------------------------
+
+                // 3. Usa o DOTween para desativar o GameObject por completo após a duração do efeito (ex: 1.5 segundos)
+                DG.Tweening.DOVirtual.DelayedCall(1.5f, () => {
+                    iceObject.SetActive(false);
+                });
+            }
+            else
+            {
+                // Caso não tenha partícula configurada, desativa direto
+                iceObject.SetActive(false);
             }
         }
     }
