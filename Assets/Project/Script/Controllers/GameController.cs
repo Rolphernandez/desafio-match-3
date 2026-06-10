@@ -52,7 +52,15 @@ namespace Gazeus.DesafioMatch3.Controllers
         [SerializeField] private GameObject _iceBonus2;
         [SerializeField] private ParticleSystem _particleBonus2;
 
+        [Header("Bonus Screen VFX")]
+        [SerializeField] private ParticleSystem _timeBonusVFX; // Arraste o Time_vfx aqui
+        [SerializeField] private ParticleSystem _coinBonusVFX; // Arraste o Coin_vfx aqui
+
         private bool _isMusicSpedUp = false;
+
+        [Header("Screen Center Combos (Juice)")]
+        [SerializeField] private ParticleSystem _greatComboParticle;    // Para 4 peças
+        [SerializeField] private ParticleSystem _perfectComboParticle;  // Para 5 ou mais peças
 
         #region Unity
         private void Awake()
@@ -79,13 +87,44 @@ namespace Gazeus.DesafioMatch3.Controllers
 
             if (boardSequence.MatchedPosition != null && boardSequence.MatchedPosition.Count > 0)
             {
-                _currentCoins += boardSequence.MatchedPosition.Count;
-                UpdateCoinUI();
+                int matchCount = boardSequence.MatchedPosition.Count;
 
-                // --- NOVAS CHAMADAS DA BARRA DE PROGRESSO ---
+                // 1. Contabiliza moedas e atualiza progresso
+                _currentCoins += matchCount;
+                UpdateCoinUI();
                 UpdateProgressBar();
                 CheckProgressMilestones();
-                // --------------------------------------------
+
+                // --- SISTEMA DE COMBOS NO MEIO DA TELA COM ÁUDIO ---
+                if (matchCount == 4)
+                {
+                    if (_greatComboParticle != null)
+                    {
+                        _greatComboParticle.Play();
+
+                        // Toca o som do GREAT se houver um AudioSource no objeto
+                        if (_greatComboParticle.TryGetComponent<AudioSource>(out var audioGreat))
+                        {
+                            audioGreat.Play();
+                        }
+                    }
+                    Debug.Log("Combo de 4: GREAT!");
+                }
+                else if (matchCount >= 5)
+                {
+                    if (_perfectComboParticle != null)
+                    {
+                        _perfectComboParticle.Play();
+
+                        // Toca o som do PERFECT se houver um AudioSource no objeto
+                        if (_perfectComboParticle.TryGetComponent<AudioSource>(out var audioPerfect))
+                        {
+                            audioPerfect.Play();
+                        }
+                    }
+                    Debug.Log("Combo de 5+: PERFECT!");
+                }
+                // ---------------------------------------------------------------
             }
 
             Sequence sequence = DOTween.Sequence();
@@ -256,32 +295,54 @@ namespace Gazeus.DesafioMatch3.Controllers
         }
         private void CheckProgressMilestones()
         {
-            // 1º Bônus: 80 pontos -> Ganha +15 segundos de tempo
+            // 1º Bônus: 80 pontos -> Ganha +20 segundos de tempo
             if (_currentCoins >= 80 && !_bonus80Gained)
             {
                 _bonus80Gained = true;
-                _timeRemaining += 15f;
+                _timeRemaining += 20f;
                 UpdateTimerUI();
 
-                // Ativa o efeito visual do primeiro bônus
+                // Quebra o gelo pequeno da barra
                 ShatterIce(_iceBonus1, _particleBonus1);
 
-                Debug.Log("Bônus de Tempo Ativado! Gelo 1 Quebrado.");
+                // --- NOVO: Dispara o VFX Gigante de Tempo no meio da tela ---
+                if (_timeBonusVFX != null)
+                {
+                    _timeBonusVFX.Play();
+                    if (_timeBonusVFX.TryGetComponent<AudioSource>(out var audioTime))
+                    {
+                        audioTime.Play();
+                    }
+                }
+                // -----------------------------------------------------------
+
+                Debug.Log("Bônus de Tempo Ativado! +20s");
             }
 
-            // 2º Bônus: 180 pontos -> Ganha +20 moedas de bônus
+            // 2º Bônus: 180 pontos -> Ganha +100 moedas de bônus instantâneas
             if (_currentCoins >= 180 && !_bonus180Gained)
             {
                 _bonus180Gained = true;
-                _currentCoins += 20;
+                _currentCoins += 100;
 
                 UpdateCoinUI();
                 UpdateProgressBar();
 
-                // Ativa o efeito visual do segundo bônus
+                // Quebra o gelo pequeno da barra
                 ShatterIce(_iceBonus2, _particleBonus2);
 
-                Debug.Log("Bônus de Moedas Ativado! Gelo 2 Quebrado.");
+                // --- NOVO: Dispara o VFX Gigante de Moedas no meio da tela ---
+                if (_coinBonusVFX != null)
+                {
+                    _coinBonusVFX.Play();
+                    if (_coinBonusVFX.TryGetComponent<AudioSource>(out var audioCoin))
+                    {
+                        audioCoin.Play();
+                    }
+                }
+                // ------------------------------------------------------------
+
+                Debug.Log("Bônus de Moedas Ativado! +20 Coins");
             }
         }
 
