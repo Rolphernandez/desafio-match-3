@@ -2077,7 +2077,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _boardView: {fileID: 429446043}
-  _boardHeight: 6
+  _boardHeight: 8
   _boardWidth: 6
   _menuScreen: {fileID: 1664833211}
   _gameplayScreen: {fileID: 97877790}
