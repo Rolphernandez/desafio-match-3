@@ -7,6 +7,7 @@ using Gazeus.DesafioMatch3.Views;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 namespace Gazeus.DesafioMatch3.Controllers
 {
@@ -62,16 +63,33 @@ namespace Gazeus.DesafioMatch3.Controllers
         [SerializeField] private ParticleSystem _greatComboParticle;    // Para 4 peças
         [SerializeField] private ParticleSystem _perfectComboParticle;  // Para 5 ou mais peças
 
+        [Header("Game Over Screen")]
+        [SerializeField] private GameObject _gameOverScreen;
+        [SerializeField] private UnityEngine.UI.Button _btnGo;
+        [SerializeField] private TMPro.TMP_Text _finalScoreText; // Referência temporária para o texto do "3º lugar" Somente para simular o Ranked.
+
         #region Unity
         private void Awake()
         {
             _gameService = new GameService();
             _boardView.TileClicked += OnTileClick;
+            
+            if (_gameOverScreen != null) _gameOverScreen.SetActive(false);
+
+            if (_btnGo != null)
+            {
+                _btnGo.onClick.AddListener(RestartGame);
+            }
         }
 
         private void OnDestroy()
         {
             _boardView.TileClicked -= OnTileClick;
+
+            if (_btnGo != null)
+            {
+                _btnGo.onClick.RemoveListener(RestartGame);
+            }
         }
 
         private void Start()
@@ -80,6 +98,8 @@ namespace Gazeus.DesafioMatch3.Controllers
             _boardView.CreateBoard(board);
         }
         #endregion
+
+        
 
         private void AnimateBoard(List<BoardSequence> boardSequences, int index, Action onComplete)
         {
@@ -108,7 +128,7 @@ namespace Gazeus.DesafioMatch3.Controllers
                             audioGreat.Play();
                         }
                     }
-                    Debug.Log("Combo de 4: GREAT!");
+                    
                 }
                 else if (matchCount >= 5)
                 {
@@ -122,7 +142,7 @@ namespace Gazeus.DesafioMatch3.Controllers
                             audioPerfect.Play();
                         }
                     }
-                    Debug.Log("Combo de 5+: PERFECT!");
+                    
                 }
                 // ---------------------------------------------------------------
             }
@@ -240,7 +260,7 @@ namespace Gazeus.DesafioMatch3.Controllers
                     {
                         _isMusicSpedUp = true;
                         if (_bgmAudioSource != null) _bgmAudioSource.pitch = _fastPitch;
-                        Debug.Log("Correria! Música acelerada.");
+                        
                     }
                 }
                 else
@@ -250,21 +270,35 @@ namespace Gazeus.DesafioMatch3.Controllers
                     {
                         _isMusicSpedUp = false;
                         if (_bgmAudioSource != null) _bgmAudioSource.pitch = _normalPitch;
-                        Debug.Log("Ufa! Ritmo normal restabelecido.");
+                        
                     }
                 }
                 // -------------------------------------------------
 
+                // --- FIM DE JOGO (UNIFICADO) ---
                 if (_timeRemaining <= 0)
                 {
                     _timeRemaining = 0;
                     _isGameRunning = false;
 
-                    // Opcional: Parar a música no Game Over
+                    // Para a música
                     if (_bgmAudioSource != null) _bgmAudioSource.Stop();
 
-                    Debug.Log("O tempo acabou!");
+                    // Atualiza a pontuação final na UI
+                    if (_finalScoreText != null)
+                    {
+                        _finalScoreText.text = _currentCoins.ToString();
+                    }
+
+                    // Mostra a tela de Game Over
+                    if (_gameOverScreen != null)
+                    {
+                        _gameOverScreen.SetActive(true);
+                    }
+
+                    
                 }
+                // -------------------------------
             }
         }
 
@@ -290,7 +324,7 @@ namespace Gazeus.DesafioMatch3.Controllers
             if (_progressImage != null)
             {
                 // O Mathf.Clamp01 garante que o valor nunca passe de 1.0 (100%), mesmo se o jogador passar de 500 pontos
-                _progressImage.fillAmount = Mathf.Clamp01((float)_currentCoins / 400f);
+                _progressImage.fillAmount = Mathf.Clamp01((float)_currentCoins / 500f);
             }
         }
         private void CheckProgressMilestones()
@@ -316,7 +350,7 @@ namespace Gazeus.DesafioMatch3.Controllers
                 }
                 // -----------------------------------------------------------
 
-                Debug.Log("Bônus de Tempo Ativado! +20s");
+                
             }
 
             // 2º Bônus: 180 pontos -> Ganha +100 moedas de bônus instantâneas
@@ -342,7 +376,7 @@ namespace Gazeus.DesafioMatch3.Controllers
                 }
                 // ------------------------------------------------------------
 
-                Debug.Log("Bônus de Moedas Ativado! +20 Coins");
+                
             }
         }
 
@@ -378,6 +412,11 @@ namespace Gazeus.DesafioMatch3.Controllers
                 // Caso não tenha partícula configurada, desativa direto
                 iceObject.SetActive(false);
             }
+        }
+        public void RestartGame()
+        {
+            // Isso recarrega a cena atual do zero, limpando o tabuleiro e resetando todas as variáveis perfeitamente!
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
     }
 }

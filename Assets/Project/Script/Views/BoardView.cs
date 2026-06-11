@@ -26,20 +26,34 @@ namespace Gazeus.DesafioMatch3.Views
             // Define a quantidade de colunas do Grid
             _boardContainer.constraintCount = board[0].Count;
 
-            // --- INÍCIO DA MATEMÁTICA DE RESPONSIVIDADE ---
+            // Define a quantidade de colunas do Grid
+            _boardContainer.constraintCount = board[0].Count;
+
+            // --- MATEMÁTICA DE RESPONSIVIDADE (LARGURA VS ALTURA) ---
             RectTransform boardRect = _boardContainer.GetComponent<RectTransform>();
+
+            // Pegamos o espaço total do contêiner do tabuleiro
             float larguraDisponivel = boardRect.rect.width;
+            float alturaDisponivel = boardRect.rect.height;
 
-            // Pega os espaçamentos e margens para o cálculo ser 100% preciso
-            float espacamentoTotal = _boardContainer.spacing.x * (board[0].Count - 1);
-            float margens = _boardContainer.padding.left + _boardContainer.padding.right;
+            // Descontamos apenas o espaçamento (Spacing) entre as peças
+            float espacamentoTotalX = _boardContainer.spacing.x * (board[0].Count - 1);
+            float espacamentoTotalY = _boardContainer.spacing.y * (board.Count - 1);
 
-            // Calcula o tamanho exato que cada quadrado deve ter
-            float tamanhoIdealDaPeca = (larguraDisponivel - espacamentoTotal - margens) / board[0].Count;
+            // Calculamos o tamanho máximo que a carta pode ter para não estourar a LARGURA
+            float tamanhoMaximoLargura = (larguraDisponivel - espacamentoTotalX) / board[0].Count;
 
-            // Aplica o tamanho dinâmico no Grid Layout
-            _boardContainer.cellSize = new Vector2(tamanhoIdealDaPeca, tamanhoIdealDaPeca);
-            // --- FIM DA MATEMÁTICA DE RESPONSIVIDADE ---
+            // Calculamos o tamanho máximo que a carta pode ter para não estourar a ALTURA (10 linhas)
+            float tamanhoMaximoAltura = (alturaDisponivel - espacamentoTotalY) / board.Count;
+
+            // A MÁGICA: Escolhemos o MENOR tamanho. 
+            // Se a tela for muito fina, a carta encolhe baseada na largura.
+            // Se a tela for muito baixa (ou tiver muitas linhas), ela encolhe baseada na altura!
+            float tamanhoIdeal = Mathf.Min(tamanhoMaximoLargura, tamanhoMaximoAltura);
+
+            // Aplica o tamanho perfeito e quadrado nas cartas
+            _boardContainer.cellSize = new Vector2(tamanhoIdeal, tamanhoIdeal);
+            // ---------------------------------------------------------
 
             _tiles = new GameObject[board.Count][];
             _tileSpots = new TileSpotView[board.Count][];
@@ -132,31 +146,32 @@ namespace Gazeus.DesafioMatch3.Views
         }
 
         public Tween MoveTiles(List<MovedTileInfo> movedTiles)
-        {
-            GameObject[][] tiles = new GameObject[_tiles.Length][];
-            for (int y = 0; y < _tiles.Length; y++)
-            {
-                tiles[y] = new GameObject[_tiles[y].Length];
-                for (int x = 0; x < _tiles[y].Length; x++)
-                {
-                    tiles[y][x] = _tiles[y][x];
-                }
-            }
+        {Sequence sequence = DOTween.Sequence();
 
-            Sequence sequence = DOTween.Sequence();
+            // Lista temporária para processar as movimentações sem sobrescrever dados antes da hora
+            List<(Vector2Int to, GameObject tile)> pendingMoves = new List<(Vector2Int, GameObject)>();
             for (int i = 0; i < movedTiles.Count; i++)
-            {
-                MovedTileInfo movedTileInfo = movedTiles[i];
-
+            { MovedTileInfo movedTileInfo = movedTiles[i];
                 Vector2Int from = movedTileInfo.From;
                 Vector2Int to = movedTileInfo.To;
 
-                sequence.Join(_tileSpots[to.y][to.x].AnimatedSetTile(_tiles[from.y][from.x]));
+                GameObject tileToMove = _tiles[from.y][from.x];
+                sequence.Join(_tileSpots[to.y][to.x].AnimatedSetTile(tileToMove));
 
-                tiles[to.y][to.x] = _tiles[from.y][from.x];
+                pendingMoves.Add((to, tileToMove));
+
+                // Limpa a posição antiga se ela não foi o destino de outro movimento neste mesmo frame
+                if (_tiles[from.y][from.x] == tileToMove)
+                {
+                    _tiles[from.y][from.x] = null;
+                }
             }
 
-            _tiles = tiles;
+            // Aplica as novas posições de forma segura na matriz original existente
+            foreach (var move in pendingMoves)
+            {
+                _tiles[move.to.y][move.to.x] = move.tile;
+            }
 
             return sequence;
         }
@@ -174,12 +189,24 @@ namespace Gazeus.DesafioMatch3.Views
 
         public void ShowSelectionFrame(int x, int y)
         {
+            // Verifica se a moldura e o spot existem para evitar erros no console
             if (_selectionFrame != null && _tileSpots[y] != null && _tileSpots[y][x] != null)
             {
-                // Move a moldura EXATAMENTE para a posição do espaço (buraco) na tela
+                // 1. Mantém a sua lógica de posição (está correta!)
                 _selectionFrame.transform.position = _tileSpots[y][x].transform.position;
 
-                // Torna a moldura visível
+                // 2. ADICIONA A SINCRONIZAÇÃO DE TAMANHO:
+                // Pegamos o RectTransform do "buraco" na grade e da moldura
+                RectTransform spotRect = _tileSpots[y][x].GetComponent<RectTransform>();
+                RectTransform frameRect = _selectionFrame.GetComponent<RectTransform>();
+
+                if (spotRect != null && frameRect != null)
+                {
+                    // A moldura assume exatamente a mesma largura e altura do spot
+                    frameRect.sizeDelta = spotRect.sizeDelta;
+                }
+
+                // 3. Torna a moldura visível
                 _selectionFrame.SetActive(true);
             }
         }
